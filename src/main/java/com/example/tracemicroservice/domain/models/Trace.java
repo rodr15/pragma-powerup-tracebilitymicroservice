@@ -12,7 +12,6 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Trace {
-    private Long id;
     private Long orderId;
     private Long employeeId;
     private Long clientId;
@@ -25,7 +24,7 @@ public class Trace {
     @Override
     public String toString() {
         return "Trace{" +
-                "id=" + id +
+//                "id=" + id +
                 ", orderId=" + orderId +
                 ", employeeId=" + employeeId +
                 ", clientId=" + clientId +
