@@ -10,5 +10,9 @@ import org.mapstruct.ReportingPolicy;
         unmappedTargetPolicy = ReportingPolicy.IGNORE,
         unmappedSourcePolicy = ReportingPolicy.IGNORE)
 public interface ITraceEntityMapper {
+    @Mapping(target = "id", source = "orderId")
     TraceEntity toEntity(Trace trace);
+
+    @Mapping(target = "orderId", source = "id")
+    Trace toTrace(TraceEntity trace);
 }

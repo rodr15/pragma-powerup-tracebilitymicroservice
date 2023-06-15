@@ -9,22 +9,19 @@ import java.time.LocalDate;
 
 @AllArgsConstructor
 @Getter
-public class TraceRequestDto {
+public class UpdateTraceRequestDto {
     @Positive
     @NotNull
     private Long orderId;
-    @Positive
-    private Long employeeId;
     @NotNull
-    @Positive
-    private Long clientId;
+    private LocalDate updatedAt;
     @NotNull
-    private LocalDate createdAt;
+    private String currentState;
 
     public static final String EXAMPLE =  "{" +
             "\"orderId\":\"1\"," +
-            "\"employeeId\":\"2\"," +
-            "\"clientId\":\"3\"," +
-            "\"createdAt\":\"1980-05-04T20:04:26.908597\"" +
+            "\"currentState\":\"EARRING\"," +
+            "\"updatedAt\":\"1980-05-04T20:04:26.908597\"" +
             "}";
+
 }

@@ -5,4 +5,5 @@ import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 public interface ITraceRepository extends MongoRepository<TraceEntity, ObjectId> {
+    TraceEntity findById(Long orderId);
 }

@@ -1,6 +1,5 @@
 package com.example.tracemicroservice.adapters.driven.mongodb.adapters;
 
-import com.example.tracemicroservice.adapters.driven.mongodb.entity.TraceEntity;
 import com.example.tracemicroservice.adapters.driven.mongodb.mappers.ITraceEntityMapper;
 import com.example.tracemicroservice.adapters.driven.mongodb.repository.ITraceRepository;
 import com.example.tracemicroservice.domain.models.Trace;
@@ -14,6 +13,13 @@ public class TraceMongoDBAdapter implements ITracePersistencePort {
 
     @Override
     public void save(Trace trace) {
-        System.out.println(traceRepository.save( traceEntityMapper.toEntity( trace ) ));
+        traceRepository.save( traceEntityMapper.toEntity( trace ) );
     }
+
+    @Override
+    public Trace getTrace(Long orderId) {
+        return traceEntityMapper.toTrace( traceRepository.findById(orderId) );
+    }
+
+
 }

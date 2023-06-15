@@ -5,4 +5,5 @@ import com.example.tracemicroservice.domain.models.Trace;
 
 public interface ITraceServicePort {
     void saveTrace(Trace trace);
+    void updateTrace(Trace trace);
 }
