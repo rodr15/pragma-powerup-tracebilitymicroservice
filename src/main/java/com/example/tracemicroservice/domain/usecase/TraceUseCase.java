@@ -21,8 +21,7 @@ public class TraceUseCase implements ITraceServicePort {
        savedTrace.setCurrentState( trace.getCurrentState() );
        savedTrace.setUpdatedAt( trace.getUpdatedAt() );
 
-        saveTrace(trace);
-
+        saveTrace(savedTrace);
     }
 
 }
