@@ -4,6 +4,8 @@ import com.example.tracemicroservice.adapters.driven.mongodb.entity.TraceEntity;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
+import java.util.Optional;
+
 public interface ITraceRepository extends MongoRepository<TraceEntity, ObjectId> {
-    TraceEntity findById(Long orderId);
+    Optional<TraceEntity> findById(Long orderId);
 }
