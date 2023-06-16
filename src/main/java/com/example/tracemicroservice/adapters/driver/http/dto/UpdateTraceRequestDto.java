@@ -5,7 +5,7 @@ import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @AllArgsConstructor
 @Getter
@@ -14,7 +14,7 @@ public class UpdateTraceRequestDto {
     @NotNull
     private Long orderId;
     @NotNull
-    private LocalDate updatedAt;
+    private LocalDateTime updatedAt;
     @NotNull
     private String currentState;
 
