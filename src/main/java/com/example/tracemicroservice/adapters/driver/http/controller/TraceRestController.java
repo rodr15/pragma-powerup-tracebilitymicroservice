@@ -37,7 +37,6 @@ public class TraceRestController {
             example = UpdateTraceRequestDto.EXAMPLE
     ) UpdateTraceRequestDto updateTraceRequestDto) {
         traceHandler.updateTrace( updateTraceRequestDto );
-
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(Collections.singletonMap(Constants.RESPONSE_MESSAGE_KEY, Constants.TRACE_CREATED_MESSAGE));
     }
