@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @Setter
 @Document(collection = "trace")
 public class TraceEntity {
-    private Long id;
+    private Long orderId;
     private Long employeeId;
     private Long clientId;
     private LocalDateTime createdAt;

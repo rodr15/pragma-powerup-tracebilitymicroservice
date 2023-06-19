@@ -20,7 +20,7 @@ public class TraceMongoDBAdapter implements ITracePersistencePort {
 
     @Override
     public Optional<Trace> getTrace(Long orderId) {
-        return traceRepository.findById(orderId).map(traceEntityMapper::toTrace);
+        return traceRepository.findByOrderId(orderId).map(traceEntityMapper::toTrace);
     }
 
 
