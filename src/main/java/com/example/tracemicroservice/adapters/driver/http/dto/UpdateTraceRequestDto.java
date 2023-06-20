@@ -13,6 +13,9 @@ public class UpdateTraceRequestDto {
     @Positive
     @NotNull
     private Long orderId;
+    @Positive
+    @NotNull
+    private Long employeeId;
     @NotNull
     private LocalDateTime updatedAt;
     @NotNull
