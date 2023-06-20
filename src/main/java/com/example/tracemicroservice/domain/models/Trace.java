@@ -17,8 +17,8 @@ public class Trace {
     private Long clientId;
     private LocalDateTime updatedAt;
     private LocalDateTime createdAt;
-    private String lastState;
-    private String currentState;
+    private OrderStatus lastState;
+    private OrderStatus currentState;
 
     @Override
     public String toString() {

@@ -1,5 +1,6 @@
 package com.example.tracemicroservice.adapters.driven.mongodb.entity;
 
+import com.example.tracemicroservice.domain.models.OrderStatus;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,6 +20,6 @@ public class TraceEntity {
     private Long clientId;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-    private String lastState;
-    private String currentState;
+    private OrderStatus lastState;
+    private OrderStatus currentState;
 }

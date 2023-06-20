@@ -2,6 +2,7 @@ package com.example.tracemicroservice.adapters.driven.mongodb.adapters;
 
 import com.example.tracemicroservice.adapters.driven.mongodb.mappers.ITraceEntityMapper;
 import com.example.tracemicroservice.adapters.driven.mongodb.repository.ITraceRepository;
+import com.example.tracemicroservice.domain.models.OrderStatus;
 import com.example.tracemicroservice.domain.models.Trace;
 import com.example.tracemicroservice.domain.spi.ITracePersistencePort;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +28,11 @@ public class TraceMongoDBAdapter implements ITracePersistencePort {
     @Override
     public List<Trace> getAllTraceByOrderId(Long orderId) {
         return traceRepository.findAllByOrderId( orderId ).stream().map(traceEntityMapper::toTrace).toList();
+    }
+
+    @Override
+    public Optional<Trace> getTraceByOrderIdAndStatus(Long orderId, OrderStatus status) {
+        return traceRepository.findByOrderIdAndCurrentState( orderId, status ).map(traceEntityMapper::toTrace);
     }
 
 

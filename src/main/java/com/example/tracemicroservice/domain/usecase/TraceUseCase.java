@@ -19,7 +19,8 @@ public class TraceUseCase implements ITraceServicePort {
 
     @Override
     public void updateTrace(Trace trace) {
-        Trace savedTrace = tracePersistencePort.getTrace(trace.getOrderId())
+        Trace savedTrace = tracePersistencePort
+                .getTraceByOrderIdAndStatus(trace.getOrderId(),trace.getCurrentState().before())
                 .orElseThrow(TraceNotFoundException::new);
 
         savedTrace.setLastState(savedTrace.getCurrentState());
