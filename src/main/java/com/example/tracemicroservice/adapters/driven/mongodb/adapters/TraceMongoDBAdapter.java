@@ -6,6 +6,7 @@ import com.example.tracemicroservice.domain.models.Trace;
 import com.example.tracemicroservice.domain.spi.ITracePersistencePort;
 import lombok.RequiredArgsConstructor;
 
+import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -20,7 +21,12 @@ public class TraceMongoDBAdapter implements ITracePersistencePort {
 
     @Override
     public Optional<Trace> getTrace(Long orderId) {
-        return traceRepository.findById(orderId).map(traceEntityMapper::toTrace);
+        return traceRepository.findByOrderId(orderId).map(traceEntityMapper::toTrace);
+    }
+
+    @Override
+    public List<Trace> getAllTraceByOrderId(Long orderId) {
+        return traceRepository.findAllByOrderId( orderId ).stream().map(traceEntityMapper::toTrace).toList();
     }
 
 

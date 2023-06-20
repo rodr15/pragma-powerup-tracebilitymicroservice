@@ -1,6 +1,7 @@
 package com.example.tracemicroservice.adapters.driver.http.controller;
 
 import com.example.tracemicroservice.adapters.driver.http.dto.TraceRequestDto;
+import com.example.tracemicroservice.adapters.driver.http.dto.TraceResponseDto;
 import com.example.tracemicroservice.adapters.driver.http.dto.UpdateTraceRequestDto;
 import com.example.tracemicroservice.adapters.driver.http.handlers.ITraceHandler;
 import com.example.tracemicroservice.configuration.Constants;
@@ -12,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -39,6 +41,12 @@ public class TraceRestController {
         traceHandler.updateTrace( updateTraceRequestDto );
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(Collections.singletonMap(Constants.RESPONSE_MESSAGE_KEY, Constants.TRACE_CREATED_MESSAGE));
+    }
+
+    @GetMapping("")
+    public ResponseEntity<List<TraceResponseDto>> getTrace(@RequestParam(defaultValue = "1") Long orderId) {
+
+        return ResponseEntity.ok(traceHandler.getTrace( orderId ));
     }
 
 }

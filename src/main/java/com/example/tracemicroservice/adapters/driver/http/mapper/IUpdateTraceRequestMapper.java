@@ -1,5 +1,6 @@
 package com.example.tracemicroservice.adapters.driver.http.mapper;
 
+import com.example.tracemicroservice.adapters.driver.http.dto.TraceResponseDto;
 import com.example.tracemicroservice.adapters.driver.http.dto.UpdateTraceRequestDto;
 import com.example.tracemicroservice.domain.models.Trace;
 import org.mapstruct.Mapper;
@@ -10,4 +11,5 @@ import org.mapstruct.ReportingPolicy;
         unmappedSourcePolicy = ReportingPolicy.IGNORE)
 public interface IUpdateTraceRequestMapper {
     Trace toTrace(UpdateTraceRequestDto updateTraceRequestDto);
+    TraceResponseDto toTraceResponseDto(Trace trace);
 }
