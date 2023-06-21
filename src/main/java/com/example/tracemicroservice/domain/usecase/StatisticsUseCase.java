@@ -24,8 +24,7 @@ public class StatisticsUseCase implements IStatisticsServicePort {
             Trace finished = tracePersistencePort.getTraceByOrderIdAndStatus(orderId, OrderStatus.FINISHED_ORDER)
                     .orElseThrow(TraceNotFoundException::new);
 
-            Duration executionTime = Duration.between(finished.getUpdatedAt(), finished.getCreatedAt());
-
+            Duration executionTime = Duration.between(finished.getCreatedAt(), finished.getUpdatedAt());
             return new OrderStatistics(orderId, executionTime);
         }).toList();
 
@@ -50,18 +49,17 @@ public class StatisticsUseCase implements IStatisticsServicePort {
                     return new EmployeeStatistics(null, employeeId, averageDuration);
                 })
                 .filter(Objects::nonNull)
-                .sorted(Comparator.comparing(EmployeeStatistics::getAverageOrderExecutionTime))
+                .sorted(Comparator.comparing(EmployeeStatistics::getAverageOrderExecutionTime).reversed())
                 .toList();
 
         IntStream.range(0, statisticsList.size())
                 .forEach(index -> statisticsList.get(index).setPosition(statisticsList.size() - (long) index));
 
-
         return statisticsList;
     }
 
     private double calculateAverageDurationNanos(List<Trace> traces) {
-        return traces.stream().mapToLong(trace -> Duration.between(trace.getUpdatedAt(), trace.getCreatedAt()).toNanos())
+        return traces.stream().mapToLong(trace -> Duration.between(trace.getCreatedAt(), trace.getUpdatedAt()).toNanos())
                 .average()
                 .orElse(0);
     }
