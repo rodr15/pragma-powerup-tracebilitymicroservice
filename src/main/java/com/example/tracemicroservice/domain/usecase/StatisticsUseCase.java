@@ -1,6 +1,7 @@
 package com.example.tracemicroservice.domain.usecase;
 
 import com.example.tracemicroservice.domain.api.IStatisticsServicePort;
+import com.example.tracemicroservice.domain.exception.TraceNotFoundException;
 import com.example.tracemicroservice.domain.models.EmployeeStatistics;
 import com.example.tracemicroservice.domain.models.OrderStatistics;
 import com.example.tracemicroservice.domain.models.OrderStatus;
@@ -20,7 +21,8 @@ public class StatisticsUseCase implements IStatisticsServicePort {
     public List<OrderStatistics> getOrdersStatistics(List<Long> ordersId) {
 
         return ordersId.stream().map(orderId -> {
-            Trace finished = tracePersistencePort.getTraceByOrderIdAndStatus(orderId, OrderStatus.FINISHED_ORDER).orElseThrow();
+            Trace finished = tracePersistencePort.getTraceByOrderIdAndStatus(orderId, OrderStatus.FINISHED_ORDER)
+                    .orElseThrow(TraceNotFoundException::new);
 
             Duration executionTime = Duration.between(finished.getUpdatedAt(), finished.getCreatedAt());
 
@@ -59,6 +61,8 @@ public class StatisticsUseCase implements IStatisticsServicePort {
     }
 
     private double calculateAverageDurationNanos(List<Trace> traces) {
-        return traces.stream().mapToLong(trace -> Duration.between(trace.getUpdatedAt(), trace.getCreatedAt()).toNanos()).average().orElse(0);
+        return traces.stream().mapToLong(trace -> Duration.between(trace.getUpdatedAt(), trace.getCreatedAt()).toNanos())
+                .average()
+                .orElse(0);
     }
 }
