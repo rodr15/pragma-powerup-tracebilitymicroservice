@@ -1,5 +1,6 @@
 package com.example.tracemicroservice.adapters.driver.http.controller;
 
+import com.example.tracemicroservice.adapters.driver.http.dto.EmployeeStatisticsResponseDto;
 import com.example.tracemicroservice.adapters.driver.http.dto.StatisticsOrderResponseDto;
 import com.example.tracemicroservice.adapters.driver.http.handlers.IStatisticsHandler;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +24,7 @@ public class StatisticsRestController {
     }
 
     @GetMapping("employee")
-    public ResponseEntity<String> getEmployeeStatistics(@RequestParam(defaultValue = "1") Long employeeId) {
-        return ResponseEntity.ok("");
+    public ResponseEntity<List<EmployeeStatisticsResponseDto>> getEmployeeStatistics(@RequestParam(defaultValue = "1") List<Long> employeesId) {
+        return ResponseEntity.ok(statisticsHandler.getEmployeesStatistics(employeesId));
     }
 }

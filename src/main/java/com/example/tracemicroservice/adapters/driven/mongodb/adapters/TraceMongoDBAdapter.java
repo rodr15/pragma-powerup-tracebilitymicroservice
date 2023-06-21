@@ -35,5 +35,10 @@ public class TraceMongoDBAdapter implements ITracePersistencePort {
         return traceRepository.findByOrderIdAndCurrentState( orderId, status ).map(traceEntityMapper::toTrace);
     }
 
+    @Override
+    public List<Trace> getTraceByEmployeeIdAndStatus(Long employeeId, OrderStatus status) {
+        return traceRepository.findAllByEmployeeIdAndCurrentState(employeeId,status).stream().map(traceEntityMapper::toTrace).toList();
+    }
+
 
 }

@@ -9,7 +9,8 @@ import com.example.tracemicroservice.domain.spi.ITracePersistencePort;
 import lombok.AllArgsConstructor;
 
 import java.time.Duration;
-import java.util.List;
+import java.util.*;
+import java.util.stream.IntStream;
 
 @AllArgsConstructor
 public class StatisticsUseCase implements IStatisticsServicePort {
@@ -18,17 +19,46 @@ public class StatisticsUseCase implements IStatisticsServicePort {
     @Override
     public List<OrderStatistics> getOrdersStatistics(List<Long> ordersId) {
 
-        return ordersId.stream()
-                .map(orderId -> {
-                    Trace finished = tracePersistencePort.getTraceByOrderIdAndStatus(orderId, OrderStatus.FINISHED_ORDER)
-                            .orElseThrow();
+        return ordersId.stream().map(orderId -> {
+            Trace finished = tracePersistencePort.getTraceByOrderIdAndStatus(orderId, OrderStatus.FINISHED_ORDER).orElseThrow();
 
-                    Duration executionTime = Duration.between(finished.getUpdatedAt(), finished.getCreatedAt());
+            Duration executionTime = Duration.between(finished.getUpdatedAt(), finished.getCreatedAt());
 
-                    return new OrderStatistics(orderId, executionTime);
-                }).toList();
+            return new OrderStatistics(orderId, executionTime);
+        }).toList();
 
     }
 
+    @Override
+    public List<EmployeeStatistics> getEmployeesStatistics(List<Long> employeesId) {
 
+        Set<Long> employeesIdSet = new HashSet<>(employeesId);
+
+        List<EmployeeStatistics> statisticsList = employeesIdSet
+                .stream()
+                .map(employeeId -> {
+                    List<Trace> traces = tracePersistencePort.getTraceByEmployeeIdAndStatus(employeeId, OrderStatus.FINISHED_ORDER);
+
+                    double averageNanos = calculateAverageDurationNanos(traces);
+
+                    Duration averageDuration = Duration.ofNanos(Math.round(averageNanos));
+                    if (averageNanos == 0) {
+                        return null;
+                    }
+                    return new EmployeeStatistics(null, employeeId, averageDuration);
+                })
+                .filter(Objects::nonNull)
+                .sorted(Comparator.comparing(EmployeeStatistics::getAverageOrderExecutionTime))
+                .toList();
+
+        IntStream.range(0, statisticsList.size())
+                .forEach(index -> statisticsList.get(index).setPosition(statisticsList.size() - (long) index));
+
+
+        return statisticsList;
+    }
+
+    private double calculateAverageDurationNanos(List<Trace> traces) {
+        return traces.stream().mapToLong(trace -> Duration.between(trace.getUpdatedAt(), trace.getCreatedAt()).toNanos()).average().orElse(0);
+    }
 }

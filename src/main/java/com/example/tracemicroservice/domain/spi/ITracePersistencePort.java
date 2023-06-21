@@ -11,4 +11,5 @@ public interface ITracePersistencePort {
     Optional<Trace> getTrace(Long orderId);
     List<Trace> getAllTraceByOrderId(Long orderId);
     Optional<Trace> getTraceByOrderIdAndStatus(Long orderId, OrderStatus status);
+    List<Trace> getTraceByEmployeeIdAndStatus(Long employeeId, OrderStatus status);
  }

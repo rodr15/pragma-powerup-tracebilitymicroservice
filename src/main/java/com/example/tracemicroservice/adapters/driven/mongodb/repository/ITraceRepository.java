@@ -12,4 +12,6 @@ public interface ITraceRepository extends MongoRepository<TraceEntity, ObjectId>
     Optional<TraceEntity> findByOrderId(Long orderId);
     Optional<TraceEntity> findByOrderIdAndCurrentState(Long orderId, OrderStatus status);
     List<TraceEntity> findAllByOrderId(Long orderId);
+    List<TraceEntity> findAllByEmployeeIdAndCurrentState(Long orderId,OrderStatus status);
+
 }

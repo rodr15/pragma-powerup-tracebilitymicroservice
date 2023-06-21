@@ -7,5 +7,6 @@ import java.util.List;
 
 public interface IStatisticsServicePort {
     List<OrderStatistics> getOrdersStatistics(List<Long> ordersId);
+    List<EmployeeStatistics> getEmployeesStatistics(List<Long> employeesId);
 
 }
