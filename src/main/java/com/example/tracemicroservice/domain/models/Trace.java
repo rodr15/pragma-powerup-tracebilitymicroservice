@@ -26,6 +26,7 @@ public class Trace {
                 ", orderId=" + orderId +
                 ", employeeId=" + employeeId +
                 ", clientId=" + clientId +
+                ", createdAt=" + createdAt +
                 ", updatedAt=" + updatedAt +
                 ", lastState='" + lastState +
                 ", currentState='" + currentState +

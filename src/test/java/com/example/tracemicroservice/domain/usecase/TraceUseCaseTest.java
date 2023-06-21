@@ -2,6 +2,7 @@ package com.example.tracemicroservice.domain.usecase;
 
 import com.example.tracemicroservice.domain.api.ITraceServicePort;
 import com.example.tracemicroservice.domain.exception.TraceNotFoundException;
+import com.example.tracemicroservice.domain.models.OrderStatus;
 import com.example.tracemicroservice.domain.models.Trace;
 import com.example.tracemicroservice.domain.spi.ITracePersistencePort;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,7 +12,8 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -35,7 +37,8 @@ class TraceUseCaseTest {
     @Test
     void saveTrace_ShouldCallTracePersistencePortSave() {
         // Arrange
-        Trace trace = createTrace();
+        Trace savedTrace = createSavedTrace();
+        Trace trace = createTrace(savedTrace);
 
         // Act
         traceUseCase.saveTrace(trace);
@@ -47,10 +50,11 @@ class TraceUseCaseTest {
     @Test
     void updateTrace_WhenTraceExists_ShouldUpdateTraceAndCallTracePersistencePortSave() {
         // Arrange
-        Trace trace = createTrace();
         Trace savedTrace = createSavedTrace();
+        Trace trace = createTrace(savedTrace);
 
-        when(tracePersistencePort.getTrace(trace.getOrderId())).thenReturn(Optional.of(savedTrace));
+        when(tracePersistencePort.getTraceByOrderIdAndStatus(trace.getOrderId(),trace.getCurrentState().before()))
+                .thenReturn(Optional.of(savedTrace));
         // Act
         traceUseCase.updateTrace(trace);
 
@@ -65,31 +69,58 @@ class TraceUseCaseTest {
     @Test
     void updateTrace_WhenTraceDoesNotExist_ShouldThrowTraceNotFoundException() {
         // Arrange
-        Trace trace = createTrace();
+        Trace savedTrace = createSavedTrace();
+        Trace trace = createTrace(savedTrace);
 
-        when(tracePersistencePort.getTrace(trace.getOrderId())).thenReturn(Optional.empty());
+        when(tracePersistencePort.getTraceByOrderIdAndStatus(trace.getOrderId(),trace.getCurrentState().before()))
+                .thenReturn(Optional.empty());
 
         // Act & Assert
         assertThrows(TraceNotFoundException.class, () -> traceUseCase.updateTrace(trace));
     }
 
-    private Trace createTrace() {
+    private Trace createTrace(Trace savedTrace) {
         Trace trace = new Trace();
-        trace.setOrderId(1L);
-        trace.setEmployeeId(2L);
-        trace.setClientId(3L);
-        trace.setUpdatedAt(LocalDate.now());
-        trace.setCreatedAt(LocalDate.now());
-        trace.setLastState("LAST_STATE");
-        trace.setCurrentState("CURRENT_STATE");
+        trace.setOrderId(savedTrace.getOrderId());
+        trace.setEmployeeId(savedTrace.getEmployeeId());
+        trace.setClientId(savedTrace.getClientId());
+        trace.setUpdatedAt(LocalDateTime.now());
+        trace.setCreatedAt(savedTrace.getCreatedAt());
+        trace.setLastState(savedTrace.getCurrentState());
+        trace.setCurrentState(savedTrace.getCurrentState().next());
         return trace;
     }
 
     private Trace createSavedTrace() {
-        Trace savedTrace = createTrace();
-        savedTrace.setLastState("SAVED_LAST_STATE");
-        savedTrace.setCurrentState("SAVED_CURRENT_STATE");
-        savedTrace.setUpdatedAt(LocalDate.now().minusDays(1));
+        Trace savedTrace = new Trace();
+        savedTrace.setOrderId(1L);
+        savedTrace.setEmployeeId(2L);
+        savedTrace.setClientId(3L);
+        savedTrace.setCreatedAt(LocalDateTime.now().minusDays(2));
+        savedTrace.setUpdatedAt(LocalDateTime.now().minusDays(1));
+        savedTrace.setLastState(OrderStatus.IN_PREPARATION_ORDER);
+        savedTrace.setCurrentState(OrderStatus.READY_ORDER);
         return savedTrace;
     }
+
+    @Test
+    void testGetTrace() {
+        // Arrange
+        Long orderId = 1L;
+        Trace trace1 = new Trace();
+        Trace trace2 = new Trace();
+        Trace trace3 = new Trace();
+        when(tracePersistencePort.getAllTraceByOrderId(any(Long.class)))
+                .thenReturn(List.of(trace1, trace2, trace3));
+
+        // Act
+        List<Trace> traceList = traceUseCase.getTrace(orderId);
+
+        // Assert
+        assertEquals(3, traceList.size());
+        assertEquals(trace1, traceList.get(0));
+        assertEquals(trace2, traceList.get(1));
+        assertEquals(trace3, traceList.get(2));
+    }
+
 }
