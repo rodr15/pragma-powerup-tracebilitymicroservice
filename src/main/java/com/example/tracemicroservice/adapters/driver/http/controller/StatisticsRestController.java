@@ -19,12 +19,12 @@ public class StatisticsRestController {
     private final IStatisticsHandler statisticsHandler;
 
     @GetMapping("orders")
-    public ResponseEntity<List<StatisticsOrderResponseDto>> getOrderStatistics(@RequestParam(defaultValue = "1") List<Long> ordersId) {
+    public ResponseEntity<List<StatisticsOrderResponseDto>> getOrderStatistics(@RequestParam List<Long> ordersId) {
         return ResponseEntity.ok(statisticsHandler.getOrdersStatistics(ordersId));
     }
 
     @GetMapping("employee")
-    public ResponseEntity<List<EmployeeStatisticsResponseDto>> getEmployeeStatistics(@RequestParam(defaultValue = "1") List<Long> employeesId) {
+    public ResponseEntity<List<EmployeeStatisticsResponseDto>> getEmployeeStatistics(@RequestParam List<Long> employeesId) {
         return ResponseEntity.ok(statisticsHandler.getEmployeesStatistics(employeesId));
     }
 }
