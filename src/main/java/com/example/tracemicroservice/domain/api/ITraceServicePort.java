@@ -8,4 +8,5 @@ public interface ITraceServicePort {
     void saveTrace(Trace trace);
     void updateTrace(Trace trace);
     List<Trace> getTrace(Long orderId);
+
 }
