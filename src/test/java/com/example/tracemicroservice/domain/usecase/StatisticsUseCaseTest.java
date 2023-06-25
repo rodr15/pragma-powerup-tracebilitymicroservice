@@ -131,5 +131,45 @@ class StatisticsUseCaseTest {
         verify(tracePersistencePort, times(1)).getTraceByEmployeeIdAndStatus(3L, OrderStatus.FINISHED_ORDER);
     }
 
+    @Test
+    void getEmployeesStatistics_WithValidEmployeesId_ReturnOneOTraceWithZeroExecutionTime() {
+        // Arrange
+        List<Long> employeesId = List.of(1L, 2L, 3L);
 
+        LocalDateTime baseDateTime = LocalDateTime.now();
+
+        Trace trace1 = new Trace(1L, 1L, 5L, baseDateTime.minusMinutes(5), baseDateTime.minusMinutes(10), OrderStatus.READY_ORDER, OrderStatus.FINISHED_ORDER);
+        Trace trace2 = new Trace(2L, 1L, 6L, baseDateTime.minusMinutes(8), baseDateTime.minusMinutes(15), OrderStatus.READY_ORDER, OrderStatus.FINISHED_ORDER);
+        Trace trace3 = new Trace(3L, 2L, 7L, baseDateTime.minusMinutes(12), baseDateTime.minusMinutes(12), OrderStatus.READY_ORDER, OrderStatus.FINISHED_ORDER);
+        Trace trace4 = new Trace(4L, 3L, 7L, baseDateTime.minusMinutes(18), baseDateTime.minusMinutes(20), OrderStatus.READY_ORDER, OrderStatus.FINISHED_ORDER);
+
+        when(tracePersistencePort.getTraceByEmployeeIdAndStatus(1L, OrderStatus.FINISHED_ORDER))
+                .thenReturn(List.of(trace1, trace2));
+        when(tracePersistencePort.getTraceByEmployeeIdAndStatus(2L, OrderStatus.FINISHED_ORDER))
+                .thenReturn(List.of(trace3));
+        when(tracePersistencePort.getTraceByEmployeeIdAndStatus(3L, OrderStatus.FINISHED_ORDER))
+                .thenReturn(List.of(trace4));
+
+        // Act
+        List<EmployeeStatistics> employeeStatisticsList = statisticsUseCase.getEmployeesStatistics(employeesId);
+
+        // Assert
+        assertEquals(2, employeeStatisticsList.size());
+
+        // Assert in position order
+
+        // POSITION: 2 | EMPLOYEE ID: 1 | AVERAGE: PT6M
+        assertEquals(2L, employeeStatisticsList.get(0).getPosition());
+        assertEquals(1L, employeeStatisticsList.get(0).getEmployeeId());
+        assertEquals(Duration.ofMinutes(6), employeeStatisticsList.get(0).getAverageOrderExecutionTime());
+
+        // POSITION: 1 | EMPLOYEE ID: 3 | AVERAGE: PT2M
+        assertEquals(3L, employeeStatisticsList.get(1).getEmployeeId());
+        assertEquals(1L, employeeStatisticsList.get(1).getPosition());
+        assertEquals(Duration.ofMinutes(2), employeeStatisticsList.get(1).getAverageOrderExecutionTime());
+
+        verify(tracePersistencePort, times(1)).getTraceByEmployeeIdAndStatus(1L, OrderStatus.FINISHED_ORDER);
+        verify(tracePersistencePort, times(1)).getTraceByEmployeeIdAndStatus(2L, OrderStatus.FINISHED_ORDER);
+        verify(tracePersistencePort, times(1)).getTraceByEmployeeIdAndStatus(3L, OrderStatus.FINISHED_ORDER);
+    }
 }
