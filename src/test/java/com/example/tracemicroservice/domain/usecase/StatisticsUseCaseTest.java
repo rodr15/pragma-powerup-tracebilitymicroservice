@@ -13,7 +13,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import javax.swing.plaf.synth.SynthOptionPaneUI;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
